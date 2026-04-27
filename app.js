@@ -1,41 +1,66 @@
 let user = document.getElementById("uses");
+let button = document.getElementById("bttn");
+let profileContainer = document.getElementById("two");
 
-async function fetchUser(username){
-    let response = await fetch(`https://api.github.com/users/${username}`);
-    let result = await response.json();
-    displayUser(result);
+async function fetchUser(username) {
+    profileContainer.innerHTML = `<div class="loading">Loading Profile...</div>`;
+
+    try {
+        let response = await fetch(`https://api.github.com/users/${username}`);
+        let result = await response.json();
+        displayUser(result);
+    } catch (error) {
+        profileContainer.innerHTML = `<h2>User Not Found 😢</h2>`;
+    }
 }
 
-document.getElementById("bttn").addEventListener("click", () =>{
-    let userID = user.value;
-    fetchUser(userID);
+button.addEventListener("click", () => {
+    let userID = user.value.trim();
+    if (userID) {
+        fetchUser(userID);
+    }
 });
 
-function displayUser(result){
-    if(!result.html_url){
-        document.getElementById('two').innerHTML = `<h1>User Not Found</h1>`
-        return         
+user.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        let userID = user.value.trim();
+        if (userID) {
+            fetchUser(userID);
+        }
     }
-    if(!result.bio){
-        result.bio = ""
+});
+
+function displayUser(result) {
+    if (!result.html_url) {
+        profileContainer.innerHTML = `<h1>User Not Found 😢</h1>`;
+        return;
     }
-    document.getElementById('two').innerHTML = `            
-    <div class="userInfo">
-                <img class="img" src=${result.avatar_url} alt="">
-                <div class="userDetail">
-                <p class="userName">${result.name}</p>
-                <p class="userbio">${result.bio}</p>
+
+    profileContainer.innerHTML = `
+    <div class="profile-card">
+        <div class="userInfo">
+            <img class="img" src="${result.avatar_url}" alt="User Avatar">
+            <div class="userDetail">
+                <p class="userName">${result.name || "No Name Available"}</p>
+                <p class="userbio">${result.bio || "No bio available"}</p>
+                <div class="extra">
+                    <p>📍 ${result.location || "Not Available"}</p>
+                    <p>🏢 ${result.company || "Not Available"}</p>
+                    <p>📅 Joined: ${new Date(result.created_at).toDateString()}</p>
                 </div>
             </div>
+        </div>
 
-            <div class="stats-container">
-                <div class="stats">
-                    <p>Followers<br>${result.followers}</p>
-                    <p>Following<br>${result.following}</p>
-                    <p>Repository<br>${result.public_repos}</p>
-                </div>
-                <a href="${result.html_url}" target="_blank" class="viewProfile">View Profile</a>
-                </div>
-            </div>`;
+        <div class="stats-container">
+            <div class="stats">
+                <p><strong>Followers</strong><br>${result.followers}</p>
+                <p><strong>Following</strong><br>${result.following}</p>
+                <p><strong>Repos</strong><br>${result.public_repos}</p>
+            </div>
 
+            <a href="${result.html_url}" target="_blank" class="viewProfile">
+                View Profile →
+            </a>
+        </div>
+    </div>`;
 }
