@@ -1,5 +1,5 @@
-# Github-Profile-Viewer
-The GitHub Profile Viewer (Repositories) is an interactive tool that fetches and displays information from the GitHub API for a specific user. When a user enters a GitHub username, the app retrieves the profile details and a list of repositories associated with that account.
+# Github-Profile-Explorer
+The GitHub Profile Explorer (Repositories) is an interactive tool that fetches and displays information from the GitHub API for a specific user. When a user enters a GitHub username, the app retrieves the profile details and a list of repositories associated with that account.
 
 **Key Features**
 User Search: Enter any GitHub username to fetch data.
